@@ -1,0 +1,14 @@
+
+.todolist {
+    list-style: none;
+    padding: 0;
+}
+
+.todolist li {
+    padding: 10px 0;
+    border-bottom: 1px solid #CCC;
+}
+
+.todolist li button {
+    float: right;
+}
