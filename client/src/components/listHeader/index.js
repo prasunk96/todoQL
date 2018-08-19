@@ -5,8 +5,8 @@ import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
 const ADD_TODO = gql`
-  mutation AddTodo($content: String!) {
-    addTodo(content:$content) {
+  mutation AddTodo($content: String!, $isChecked: Boolean!) {
+    addTodo(content:$content, isChecked:$isChecked ) {
     id
     content
     isChecked
@@ -24,7 +24,7 @@ const GET_TODOS = gql`
   }
 `;
 
-class ListHeader extends Component {
+export default class ListHeader extends Component {
 
     state = {
         todoText: ""
@@ -51,8 +51,6 @@ class ListHeader extends Component {
                 update={(cache, {data: {addTodo}}) => {
                     const results = cache.readQuery({ query: GET_TODOS });
 
-                    // console.log(results);
-                    // console.log(addTodo);
 
                     cache.writeQuery({
                       query: GET_TODOS,
@@ -67,7 +65,7 @@ class ListHeader extends Component {
                     
                     <button 
                         onClick={e => {
-                          addTodo({ variables: { text: this.state.todoText} });
+                          addTodo({ variables: { content: this.state.todoText, isChecked: false} });
                           this.setState({todoText: ""});
                         }}
                     >
@@ -82,5 +80,3 @@ class ListHeader extends Component {
 
 
 }
-
-export default ListHeader;
