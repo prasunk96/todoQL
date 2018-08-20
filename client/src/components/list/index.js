@@ -2,7 +2,7 @@ import {h, Component} from 'preact';
 import style from './style';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
-//import {GraphQLString} from 'graphql';
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const GET_TODOS = gql`
     query {
@@ -40,16 +40,16 @@ const List = () => (
                                 <Mutation 
                                     mutation={REMOVE_TODO}
                                     update={(cache, {data: {removeTodo}})=> {
-                                        const results = cache.readQuery({query: GET_TODOS});
+                                        const {todos} = cache.readQuery({query: GET_TODOS});
 
                                         cache.writeQuery({
                                             query: GET_TODOS,
-                                            data: { todos: removeTodo}
+                                            data: { todos: todos.filter(e => e.id !== todo.id)}
                                         });
                                     }}
                                 >
-                                {(removeTodo, {data}) => (
-                                    <button onClick={e => {
+                                {(removeTodo,{data}) => (
+                                    <button class="btn btn-danger" onClick={e => {
                                         removeTodo({variables: {id: todo.id}});
                                     }}>
                                     Remove</button>
@@ -66,3 +66,6 @@ const List = () => (
 )
 
 export default List;
+
+
+// refetchQueries: [{ query: GET_TODOS }]

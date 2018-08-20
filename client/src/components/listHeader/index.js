@@ -3,6 +3,7 @@ import style from './style';
 import List from '../list';
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const ADD_TODO = gql`
   mutation AddTodo($content: String!, $isChecked: Boolean!) {
@@ -49,12 +50,12 @@ export default class ListHeader extends Component {
             <Mutation 
                 mutation={ADD_TODO}
                 update={(cache, {data: {addTodo}}) => {
-                    const results = cache.readQuery({ query: GET_TODOS });
+                    const {todos} = cache.readQuery({ query: GET_TODOS });
 
 
                     cache.writeQuery({
                       query: GET_TODOS,
-                      data: { todos: addTodo }
+                      data: { todos: todos.concat([addTodo]) }
                     });
                 }}
             >
@@ -63,9 +64,10 @@ export default class ListHeader extends Component {
                 <div>
                     <input type="text" value={this.state.todoText} onChange={this.handleOnInputChange}/>
                     
-                    <button 
+                    <button class="btn btn-success"
                         onClick={e => {
-                          addTodo({ variables: { content: this.state.todoText, isChecked: false} });
+                          addTodo({ variables: { content: this.state.todoText, isChecked: false}
+                          })
                           this.setState({todoText: ""});
                         }}
                     >
@@ -80,3 +82,5 @@ export default class ListHeader extends Component {
 
 
 }
+
+// refetchQueries: [{ query: GET_TODOS }]

@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
 import style from './style';
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 const Header = () => (
 	<header class={style.header}>
