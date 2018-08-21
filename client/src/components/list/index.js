@@ -1,5 +1,5 @@
 import {h, Component} from 'preact';
-import style from './style';
+import style from '../../style';
 import gql from 'graphql-tag';
 import {Query, Mutation} from 'react-apollo';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
@@ -24,6 +24,16 @@ mutation RemoveTodo($id:String!) {
 }
 `;
 
+const UPDATE_TODO = gql`
+mutation UpdateTodo($id:String!, $content: String!, $isChecked: Boolean!) {
+    updateTodo(id:$id, content: $content, isChecked: $isChecked) {
+        id
+        content
+        isChecked
+    }
+}
+`
+
 const List = () => (
     <Query query={GET_TODOS}>
         {({loading, error, data}) => {
@@ -32,15 +42,34 @@ const List = () => (
 
             console.log(data.todos);
             return(
-                <ul class={style.todolist}>
+                <ul class="list-group list-group-flush todolist">
                     {
                         data.todos.map((todo) => (
-                            <li>
-                                {todo.content}
+                            <li class="li-style">
+                                <Mutation 
+                                    mutation={UPDATE_TODO}
+                                    update={(cache, {data: {updateTodo}}) => {
+                                        const {todos} = cache.readQuery({query: GET_TODOS});
+
+                                        cache.writeQuery({
+                                            query: GET_TODOS,
+                                            data: {todos: todos}
+                                        });
+                                    }}
+                                >
+                                {(updateTodo,{data}) => (
+                                    <input type="checkbox" class="checkbox" onClick={e=> {
+                                        updateTodo({variables: {id: todo.id, content: todo.content, isChecked: (todo.isChecked)?false:true}})
+                                    }} checked={todo.isChecked}/>
+                                )}
+                                </Mutation>
+                                {
+                                    (todo.isChecked===true)?<span class="li-text checked">{todo.content}</span>:<span class="li-text">{todo.content}</span>
+                                }
                                 <Mutation 
                                     mutation={REMOVE_TODO}
                                     update={(cache, {data: {removeTodo}})=> {
-                                        const {todos} = cache.readQuery({query: GET_TODOS});
+                                        const {todos} = cache.readQuery({query: GET_TODOS}); 
 
                                         cache.writeQuery({
                                             query: GET_TODOS,
@@ -48,12 +77,12 @@ const List = () => (
                                         });
                                     }}
                                 >
-                                {(removeTodo,{data}) => (
-                                    <button class="btn btn-danger" onClick={e => {
-                                        removeTodo({variables: {id: todo.id}});
-                                    }}>
-                                    Remove</button>
-                                )}
+                                    {(removeTodo,{data}) => (
+                                        <button class="btn btn-danger li-btn" onClick={e => {
+                                            removeTodo({variables: {id: todo.id}});
+                                        }}>
+                                        <span>X</span></button>
+                                    )}
                                 </Mutation>
                             </li>
                         )

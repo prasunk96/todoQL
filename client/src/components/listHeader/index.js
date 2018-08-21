@@ -61,18 +61,22 @@ export default class ListHeader extends Component {
             >
 
             {(addTodo, { data }) => (
-                <div>
-                    <input type="text" value={this.state.todoText} onChange={this.handleOnInputChange}/>
-                    
-                    <button class="btn btn-success"
-                        onClick={e => {
-                          addTodo({ variables: { content: this.state.todoText, isChecked: false}
-                          })
-                          this.setState({todoText: ""});
-                        }}
-                    >
-                        Add
-                    </button>
+                <div class="input-group mb-3">
+                    <input
+                    class="form-control" type="text" value={this.state.todoText} onChange={this.handleOnInputChange}
+                    />
+                    <div class="input-group-append">    
+                        <button class="btn btn-success"
+                            onClick={e => {
+                            addTodo({ variables: { content: this.state.todoText, isChecked: false}
+                            })
+                            this.setState({todoText: ""});
+                            }}
+                        >
+                            Add
+                        </button>    
+                    </div>
+                
                 </div>
             )}
                
@@ -84,3 +88,4 @@ export default class ListHeader extends Component {
 }
 
 // refetchQueries: [{ query: GET_TODOS }]
+
