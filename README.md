@@ -7,7 +7,7 @@
    - To stop the mongodb server run `sudo service mongod stop`
 
 ## Starting the mongodb server for this application
-1. create a folder `mongodb` in the same directory where the client an server folders are residing.
+1. create a folder `mongodb` in the same directory where the client and server folders are residing.
 2. cd to mongodb folder and create folder name `data`
 3. now run command `mongod --dbpath=data`
 4. **In the console you should see mongodb started at port 27017**
